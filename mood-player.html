@@ -698,43 +698,15 @@
                     limit: 20
                 });
 
-                // Get artist IDs from DNA profile
-                let seedArtists = '';
-                if (dnaProfile.artists && dnaProfile.artists.length > 0) {
-                    resultsDiv.innerHTML = '<div class="loading">Zoeken naar je favoriete artists... 🎵</div>';
-                    const artistIds = [];
-                    for (const artistName of dnaProfile.artists.slice(0, 2)) {
-                        const artistId = await searchArtistId(artistName);
-                        if (artistId) {
-                            artistIds.push(artistId);
-                        }
-                    }
-                    if (artistIds.length > 0) {
-                        seedArtists = artistIds.join(',');
-                    }
-                }
+                // TEMPORARY: Skip artist search, use only simple genres for debugging
+                console.log('DNA Profile:', selectedDNA);
+                console.log('Available genres:', dnaProfile.genres);
 
-                // Add seeds in priority order (max 5 total)
-                let seedCount = 0;
+                // Use only 1-2 simple genre seeds
+                const simpleGenres = ['techno', 'house'];
+                params.append('seed_genres', simpleGenres.slice(0, 2).join(','));
 
-                // Priority 1: Artist seeds from DNA
-                if (seedArtists && seedCount < 5) {
-                    params.append('seed_artists', seedArtists);
-                    seedCount += seedArtists.split(',').length;
-                }
-
-                // Priority 2: Genre seeds
-                if (dnaProfile.genres && dnaProfile.genres.length > 0 && seedCount < 5) {
-                    const remainingSlots = 5 - seedCount;
-                    const genreSeeds = dnaProfile.genres.slice(0, Math.min(remainingSlots, 3)).join(',');
-                    params.append('seed_genres', genreSeeds);
-                    seedCount += genreSeeds.split(',').length;
-                }
-
-                // Fallback if no seeds available
-                if (seedCount === 0) {
-                    params.append('seed_genres', 'electronic');
-                }
+                console.log('Using genres:', simpleGenres.slice(0, 2).join(','));
 
                 resultsDiv.innerHTML = '<div class="loading">Genereren van je perfecte playlist... 🎵</div>';
 
