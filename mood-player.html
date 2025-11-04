@@ -660,7 +660,19 @@
                     localStorage.removeItem('spotify_access_token');
                     location.reload();
                 }
-                throw new Error(`API Error: ${response.status}`);
+
+                // Get detailed error info from Spotify
+                let errorDetail = '';
+                try {
+                    const errorData = await response.json();
+                    errorDetail = JSON.stringify(errorData, null, 2);
+                    console.error('Spotify API Error Details:', errorData);
+                } catch (e) {
+                    errorDetail = await response.text();
+                    console.error('Spotify API Error (raw):', errorDetail);
+                }
+
+                throw new Error(`API Error ${response.status}: ${errorDetail}`);
             }
 
             return response.json();
