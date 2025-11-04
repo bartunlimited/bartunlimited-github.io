@@ -698,20 +698,20 @@
                     limit: 20
                 });
 
-                // ULTRA SIMPLE TEST: Use just 'pop' - the most basic genre
+                // Use genres from DNA profile (up to 5 seeds total)
                 console.log('DNA Profile:', selectedDNA);
-
-                params.append('seed_genres', 'pop');
-                console.log('Using seed_genres: pop');
+                const genresToUse = dnaProfile.genres ? dnaProfile.genres.slice(0, 5) : ['electronic'];
+                params.append('seed_genres', genresToUse.join(','));
+                console.log('Using seed_genres:', genresToUse.join(','));
 
                 resultsDiv.innerHTML = '<div class="loading">Genereren van je perfecte playlist... 🎵</div>';
 
                 // Add target/min/max features
-                // Note: Spotify doesn't support tempo or mode parameters
-                const UNSUPPORTED_PARAMS = ['tempo', 'min_tempo', 'max_tempo', 'target_tempo', 'mode'];
+                // Note: mode parameter sometimes causes issues, so we skip it
+                const UNSUPPORTED_PARAMS = ['mode'];
 
                 Object.entries(targetFeatures).forEach(([key, value]) => {
-                    // Skip unsupported params (tempo)
+                    // Skip unsupported params
                     if (UNSUPPORTED_PARAMS.includes(key)) {
                         return;
                     }
