@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Music Player - Spotify</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #1DB954;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .mood-btn {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .mood-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .mood-btn.selected {
+            background: #1DB954;
+            color: white;
+            border-color: #1DB954;
+            font-weight: 600;
+        }
+
+        .mood-icon {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .dna-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+        }
+
+        .dna-select:focus {
+            outline: none;
+            border-color: #1DB954;
+        }
+
+        .dna-description {
+            margin-top: 10px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: #1ed760;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+        }
+
+        .action-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .login-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #1DB954;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #1ed760;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+        }
+
+        .results {
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .track-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #f5f5f5;
+            transition: all 0.2s ease;
+        }
+
+        .track-item:hover {
+            background: #e8e8e8;
+            transform: translateX(5px);
+        }
+
+        .track-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            margin-right: 15px;
+        }
+
+        .track-info {
+            flex: 1;
+        }
+
+        .track-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .track-artist {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .play-btn {
+            padding: 8px 16px;
+            background: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+        }
+
+        .play-btn:hover {
+            background: #1ed760;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .user-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1DB954;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .mood-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .spotify-logo {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1DB954;
+            font-size: 3em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spotify-logo">&#x1F3B5;</div>
+        <h1>Mood Music Player</h1>
+        <p class="subtitle">Tell me your mood, I'll play the perfect music</p>
+
+        <div id="loginSection" class="login-section" style="display: none;">
+            <p style="margin-bottom: 20px; color: #666;">Connect your Spotify account to get started</p>
+            <button onclick="loginWithSpotify()" class="login-btn">
+                Connect Spotify
+            </button>
+        </div>
+
+        <div id="appSection" style="display: none;">
+            <div class="user-info" id="userInfo"></div>
+
+            <div class="section">
+                <div class="section-title">How are you feeling?</div>
+                <div class="mood-grid" id="moodGrid">
+                    <button class="mood-btn" data-mood="happy">
+                        <span class="mood-icon">😊</span>
+                        Happy
+                    </button>
+                    <button class="mood-btn" data-mood="sad">
+                        <span class="mood-icon">😢</span>
+                        Sad
+                    </button>
+                    <button class="mood-btn" data-mood="energetic">
+                        <span class="mood-icon">⚡</span>
+                        Energetic
+                    </button>
+                    <button class="mood-btn" data-mood="chill">
+                        <span class="mood-icon">😌</span>
+                        Chill
+                    </button>
+                    <button class="mood-btn" data-mood="focused">
+                        <span class="mood-icon">🎯</span>
+                        Focused
+                    </button>
+                    <button class="mood-btn" data-mood="romantic">
+                        <span class="mood-icon">❤️</span>
+                        Romantic
+                    </button>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Select Your Music DNA</div>
+                <select class="dna-select" id="dnaSelect">
+                    <option value="">Choose your music style...</option>
+                    <option value="dance_party">Dance Party</option>
+                    <option value="acoustic_vibes">Acoustic Vibes</option>
+                    <option value="electronic_focus">Electronic Focus</option>
+                    <option value="vocal_power">Vocal Power</option>
+                    <option value="upbeat_pop">Upbeat Pop</option>
+                    <option value="indie_alternative">Indie Alternative</option>
+                    <option value="hip_hop_rnb">Hip Hop & R&B</option>
+                    <option value="rock_energy">Rock Energy</option>
+                </select>
+                <div class="dna-description" id="dnaDescription"></div>
+            </div>
+
+            <button class="action-btn" id="generateBtn" onclick="generatePlaylist()" disabled>
+                Generate Playlist 🎵
+            </button>
+
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Spotify Configuration
+        const CLIENT_ID = 'YOUR_SPOTIFY_CLIENT_ID'; // You'll need to set this
+        const REDIRECT_URI = window.location.origin + window.location.pathname;
+        const SCOPES = 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private user-library-read';
+
+        // Mood to audio features mapping
+        const MOOD_FEATURES = {
+            happy: { valence: 0.8, energy: 0.7, mode: 1 },
+            sad: { valence: 0.2, energy: 0.3, mode: 0 },
+            energetic: { valence: 0.7, energy: 0.9, danceability: 0.8 },
+            chill: { valence: 0.5, energy: 0.3, acousticness: 0.6 },
+            focused: { valence: 0.5, energy: 0.5, instrumentalness: 0.5 },
+            romantic: { valence: 0.6, energy: 0.4, acousticness: 0.4 }
+        };
+
+        // Music DNA profiles
+        const DNA_PROFILES = {
+            dance_party: {
+                name: 'Dance Party',
+                description: 'High energy tracks perfect for dancing and parties',
+                features: { danceability: 0.9, energy: 0.9, valence: 0.8 }
+            },
+            acoustic_vibes: {
+                name: 'Acoustic Vibes',
+                description: 'Unplugged, organic sounds with acoustic instruments',
+                features: { acousticness: 0.9, energy: 0.4, instrumentalness: 0.3 }
+            },
+            electronic_focus: {
+                name: 'Electronic Focus',
+                description: 'Electronic beats to help you concentrate',
+                features: { instrumentalness: 0.7, energy: 0.6, speechiness: 0.1 }
+            },
+            vocal_power: {
+                name: 'Vocal Power',
+                description: 'Strong vocals and lyrical content',
+                features: { speechiness: 0.4, acousticness: 0.5, instrumentalness: 0.1 }
+            },
+            upbeat_pop: {
+                name: 'Upbeat Pop',
+                description: 'Catchy, feel-good pop music',
+                features: { valence: 0.8, danceability: 0.7, energy: 0.7 }
+            },
+            indie_alternative: {
+                name: 'Indie Alternative',
+                description: 'Alternative and indie rock vibes',
+                features: { valence: 0.5, energy: 0.6, acousticness: 0.4 }
+            },
+            hip_hop_rnb: {
+                name: 'Hip Hop & R&B',
+                description: 'Urban beats and smooth R&B grooves',
+                features: { speechiness: 0.5, danceability: 0.7, energy: 0.6 }
+            },
+            rock_energy: {
+                name: 'Rock Energy',
+                description: 'High energy rock and alternative',
+                features: { energy: 0.9, loudness: 0.8, valence: 0.6 }
+            }
+        };
+
+        let accessToken = null;
+        let selectedMood = null;
+        let selectedDNA = null;
+
+        // Initialize app
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = getAccessTokenFromURL();
+            if (token) {
+                accessToken = token;
+                window.history.replaceState({}, document.title, REDIRECT_URI);
+                loadApp();
+            } else {
+                const stored = localStorage.getItem('spotify_access_token');
+                if (stored) {
+                    accessToken = stored;
+                    loadApp();
+                } else {
+                    document.getElementById('loginSection').style.display = 'block';
+                }
+            }
+
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Mood selection
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedMood = btn.dataset.mood;
+                    updateGenerateButton();
+                });
+            });
+
+            // DNA selection
+            document.getElementById('dnaSelect').addEventListener('change', (e) => {
+                selectedDNA = e.target.value;
+                updateDNADescription();
+                updateGenerateButton();
+            });
+        }
+
+        function updateDNADescription() {
+            const desc = document.getElementById('dnaDescription');
+            if (selectedDNA && DNA_PROFILES[selectedDNA]) {
+                desc.textContent = DNA_PROFILES[selectedDNA].description;
+                desc.style.display = 'block';
+            } else {
+                desc.style.display = 'none';
+            }
+        }
+
+        function updateGenerateButton() {
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = !selectedMood || !selectedDNA;
+        }
+
+        function loginWithSpotify() {
+            const codeVerifier = generateCodeVerifier();
+            localStorage.setItem('code_verifier', codeVerifier);
+
+            generateCodeChallenge(codeVerifier).then(codeChallenge => {
+                const authUrl = new URL('https://accounts.spotify.com/authorize');
+                authUrl.searchParams.append('client_id', CLIENT_ID);
+                authUrl.searchParams.append('response_type', 'token');
+                authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
+                authUrl.searchParams.append('scope', SCOPES);
+                authUrl.searchParams.append('code_challenge_method', 'S256');
+                authUrl.searchParams.append('code_challenge', codeChallenge);
+
+                window.location.href = authUrl.toString();
+            });
+        }
+
+        function generateCodeVerifier() {
+            const array = new Uint32Array(56);
+            crypto.getRandomValues(array);
+            return Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
+        }
+
+        async function generateCodeChallenge(verifier) {
+            const data = new TextEncoder().encode(verifier);
+            const digest = await crypto.subtle.digest('SHA-256', data);
+            return btoa(String.fromCharCode(...new Uint8Array(digest)))
+                .replace(/=/g, '')
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_');
+        }
+
+        function getAccessTokenFromURL() {
+            const hash = window.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            const token = params.get('access_token');
+            if (token) {
+                localStorage.setItem('spotify_access_token', token);
+            }
+            return token;
+        }
+
+        async function loadApp() {
+            try {
+                const user = await fetchSpotifyAPI('https://api.spotify.com/v1/me');
+                document.getElementById('userInfo').innerHTML = `
+                    <div>Connected as <span class="user-name">${user.display_name || user.id}</span></div>
+                `;
+                document.getElementById('appSection').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading app:', error);
+                localStorage.removeItem('spotify_access_token');
+                document.getElementById('loginSection').style.display = 'block';
+            }
+        }
+
+        async function fetchSpotifyAPI(url, options = {}) {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    localStorage.removeItem('spotify_access_token');
+                    location.reload();
+                }
+                throw new Error(`API Error: ${response.status}`);
+            }
+
+            return response.json();
+        }
+
+        async function generatePlaylist() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading">Finding perfect tracks for your mood... 🎵</div>';
+
+            try {
+                // Combine mood and DNA features
+                const moodFeatures = MOOD_FEATURES[selectedMood];
+                const dnaFeatures = DNA_PROFILES[selectedDNA].features;
+
+                // Merge features (DNA takes precedence for overlaps)
+                const targetFeatures = { ...moodFeatures, ...dnaFeatures };
+
+                // Get user's top tracks to use as seeds
+                const topTracks = await fetchSpotifyAPI('https://api.spotify.com/v1/me/top/tracks?limit=5&time_range=short_term');
+                const seedTracks = topTracks.items.slice(0, 2).map(t => t.id).join(',');
+
+                // Build recommendations query
+                const params = new URLSearchParams({
+                    limit: 20,
+                    seed_tracks: seedTracks || '0c6xIDDpzE81m2q797ordA', // fallback seed
+                });
+
+                // Add target features
+                Object.entries(targetFeatures).forEach(([key, value]) => {
+                    params.append(`target_${key}`, value);
+                });
+
+                const recommendations = await fetchSpotifyAPI(
+                    `https://api.spotify.com/v1/recommendations?${params.toString()}`
+                );
+
+                displayResults(recommendations.tracks);
+            } catch (error) {
+                console.error('Error generating playlist:', error);
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}<br><br>
+                        <small>Note: Make sure you've set up your Spotify Client ID and have the necessary API permissions.</small>
+                    </div>
+                `;
+            }
+        }
+
+        function displayResults(tracks) {
+            const resultsDiv = document.getElementById('results');
+
+            if (!tracks || tracks.length === 0) {
+                resultsDiv.innerHTML = '<div class="loading">No tracks found. Try different settings!</div>';
+                return;
+            }
+
+            const moodName = selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1);
+            const dnaName = DNA_PROFILES[selectedDNA].name;
+
+            resultsDiv.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <div class="section-title">Your ${moodName} ${dnaName} Playlist</div>
+                </div>
+                ${tracks.map(track => `
+                    <div class="track-item">
+                        <img src="${track.album.images[2]?.url || track.album.images[0]?.url}"
+                             alt="${track.name}"
+                             class="track-image">
+                        <div class="track-info">
+                            <div class="track-name">${track.name}</div>
+                            <div class="track-artist">${track.artists.map(a => a.name).join(', ')}</div>
+                        </div>
+                        <button class="play-btn" onclick="playTrack('${track.uri}', '${track.external_urls.spotify}')">
+                            Play
+                        </button>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function playTrack(uri, url) {
+            // Open track in Spotify (web or app)
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
