@@ -705,56 +705,82 @@
                 // Merge features (DNA takes precedence for overlaps)
                 const targetFeatures = { ...moodFeatures, ...dnaFeatures };
 
-                // Build recommendations query
-                const params = new URLSearchParams({
-                    limit: 20,
-                    market: 'NL'  // Use Netherlands market (helps with availability)
-                });
+                // NOTE: Spotify's /recommendations endpoint is DEPRECATED for new apps
+                // Using /search API instead with genre queries
 
-                // SIMPLE APPROACH: Use ONLY genre seeds (no artists for now)
-                // Spotify's recommendations endpoint can be picky with seed combinations
-                let seedCount = 0;
+                resultsDiv.innerHTML = '<div class="loading">Zoeken naar perfecte tracks... 🎵</div>';
 
+                // Build search query based on DNA profile
+                let searchQueries = [];
+
+                // Add artist searches (if available)
+                if (dnaProfile.artists && dnaProfile.artists.length > 0) {
+                    for (const artist of dnaProfile.artists.slice(0, 2)) {
+                        searchQueries.push(`artist:"${artist}"`);
+                    }
+                }
+
+                // Add genre searches
                 if (dnaProfile.genres && dnaProfile.genres.length > 0) {
-                    // Use up to 3 genres (conservative approach)
-                    const genresToUse = dnaProfile.genres.slice(0, 3);
-                    params.append('seed_genres', genresToUse.join(','));
-                    seedCount = genresToUse.length;
-                    console.log(`Using ${genresToUse.length} genre seeds: ${genresToUse.join(',')}`);
+                    for (const genre of dnaProfile.genres.slice(0, 2)) {
+                        searchQueries.push(`genre:"${genre}"`);
+                    }
                 } else {
-                    // Fallback to basic genres
-                    params.append('seed_genres', 'techno,electronic');
-                    seedCount = 2;
-                    console.log('Using fallback genre seeds: techno,electronic');
+                    searchQueries.push('genre:"techno"');
                 }
 
-                resultsDiv.innerHTML = '<div class="loading">Genereren van je perfecte playlist... 🎵</div>';
+                console.log('Search queries:', searchQueries);
 
-                // Add target features - START WITH JUST ONE to test
-                // Once working, we can add more features
-                if (targetFeatures.energy) {
-                    params.append('target_energy', targetFeatures.energy);
-                    console.log('Using target_energy:', targetFeatures.energy);
+                // Execute multiple searches and combine results
+                const allTracks = [];
+                for (const query of searchQueries.slice(0, 3)) { // Max 3 searches
+                    try {
+                        const params = new URLSearchParams({
+                            q: query,
+                            type: 'track',
+                            limit: 10,
+                            market: 'NL'
+                        });
+
+                        const url = `https://api.spotify.com/v1/search?${params.toString()}`;
+                        console.log('Search URL:', url);
+
+                        const result = await fetchSpotifyAPI(url);
+
+                        if (result.tracks && result.tracks.items) {
+                            allTracks.push(...result.tracks.items);
+                        }
+                    } catch (error) {
+                        console.warn(`Search failed for query "${query}":`, error);
+                    }
                 }
 
-                const url = `https://api.spotify.com/v1/recommendations?${params.toString()}`;
-                console.log('Recommendations URL:', url);
-                console.log('Target features:', targetFeatures);
-                console.log('Total seeds used:', seedCount);
-
-                const recommendations = await fetchSpotifyAPI(url);
-
-                if (!recommendations.tracks || recommendations.tracks.length === 0) {
-                    throw new Error('No recommendations returned from Spotify');
+                // Remove duplicates
+                const uniqueTracks = [];
+                const seenIds = new Set();
+                for (const track of allTracks) {
+                    if (!seenIds.has(track.id)) {
+                        seenIds.add(track.id);
+                        uniqueTracks.push(track);
+                    }
                 }
 
-                displayResults(recommendations.tracks, dnaProfile.name);
+                // Limit to 20 tracks
+                const finalTracks = uniqueTracks.slice(0, 20);
+
+                if (finalTracks.length === 0) {
+                    throw new Error('No tracks found. Try a different DNA profile.');
+                }
+
+                console.log(`Found ${finalTracks.length} unique tracks`);
+                displayResults(finalTracks, dnaProfile.name);
+
             } catch (error) {
                 console.error('Error generating playlist:', error);
                 resultsDiv.innerHTML = `
                     <div class="error">
                         <strong>Error:</strong> ${error.message}<br><br>
-                        <small>Check browser console for more details. Note: Spotify token expires after 1 hour.</small>
+                        <small>Note: Spotify's recommendations API is deprecated. Using search instead.</small>
                     </div>
                 `;
             }
