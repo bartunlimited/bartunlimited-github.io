@@ -698,15 +698,11 @@
                     limit: 20
                 });
 
-                // TEMPORARY: Skip artist search, use only simple genres for debugging
+                // ULTRA SIMPLE TEST: Use just 'pop' - the most basic genre
                 console.log('DNA Profile:', selectedDNA);
-                console.log('Available genres:', dnaProfile.genres);
 
-                // Use only 1-2 simple genre seeds
-                const simpleGenres = ['techno', 'house'];
-                params.append('seed_genres', simpleGenres.slice(0, 2).join(','));
-
-                console.log('Using genres:', simpleGenres.slice(0, 2).join(','));
+                params.append('seed_genres', 'pop');
+                console.log('Using seed_genres: pop');
 
                 resultsDiv.innerHTML = '<div class="loading">Genereren van je perfecte playlist... 🎵</div>';
 
