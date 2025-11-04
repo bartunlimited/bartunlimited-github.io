@@ -388,10 +388,10 @@
                 name: 'Melodic Techno',
                 description: '35% van je DNA. Melodisch & emotioneel. Stephan Bodzin, Mind Against, Adriatique, Kevin de Vries.',
                 features: {
-                    target_energy: 0.7,
-                    target_valence: 0.6,
-                    target_danceability: 0.75,
-                    target_instrumentalness: 0.4
+                    energy: 0.7,
+                    valence: 0.6,
+                    danceability: 0.75,
+                    instrumentalness: 0.4
                 },
                 artists: ['Stephan Bodzin', 'Mind Against', 'Adriatique'],
                 genres: ['techno', 'house', 'electronic']
@@ -400,10 +400,10 @@
                 name: 'Tech House',
                 description: '30% van je DNA. Groovy & driving. CamelPhat (11 tracks!), Hannah Wants, John Summit.',
                 features: {
-                    target_energy: 0.75,
-                    target_valence: 0.65,
-                    target_danceability: 0.85,
-                    target_instrumentalness: 0.3
+                    energy: 0.75,
+                    valence: 0.65,
+                    danceability: 0.85,
+                    instrumentalness: 0.3
                 },
                 artists: ['CamelPhat', 'John Summit', 'Hannah Wants'],
                 genres: ['house', 'techno', 'electronic']
@@ -412,10 +412,10 @@
                 name: 'Progressive Trance',
                 description: '25% van je DNA. Emotioneel & uplifting. Armin (7-8 jaar!), Above & Beyond, Cosmic Gate.',
                 features: {
-                    target_energy: 0.8,
-                    target_valence: 0.75,
-                    target_danceability: 0.7,
-                    target_instrumentalness: 0.2
+                    energy: 0.8,
+                    valence: 0.75,
+                    danceability: 0.7,
+                    instrumentalness: 0.2
                 },
                 artists: ['Armin van Buuren', 'Above & Beyond', 'Cosmic Gate'],
                 genres: ['trance', 'dance', 'electronic']
@@ -424,10 +424,10 @@
                 name: 'Afro/World',
                 description: '10% van je DNA. Vakantie vibes. Black Coffee, Brazilian funk.',
                 features: {
-                    target_energy: 0.7,
-                    target_valence: 0.8,
-                    target_danceability: 0.85,
-                    target_acousticness: 0.3
+                    energy: 0.7,
+                    valence: 0.8,
+                    danceability: 0.85,
+                    acousticness: 0.3
                 },
                 artists: ['Black Coffee'],
                 genres: ['house', 'dance', 'electronic']
@@ -436,10 +436,10 @@
                 name: 'Mixed Spotify DNA',
                 description: 'Alle je Spotify stijlen: Melodic Techno, Tech House, Progressive Trance. 122-128 BPM sweet spot.',
                 features: {
-                    target_energy: 0.75,
-                    target_valence: 0.65,
-                    target_danceability: 0.75,
-                    target_instrumentalness: 0.3
+                    energy: 0.75,
+                    valence: 0.65,
+                    danceability: 0.75,
+                    instrumentalness: 0.3
                 },
                 artists: ['CamelPhat', 'Stephan Bodzin', 'Armin van Buuren'],
                 genres: ['techno', 'house', 'electronic']
@@ -450,11 +450,11 @@
                 name: 'Hard/Industrial Techno',
                 description: 'THE TUNNEL vibes! Helena Hauff, Bassiani, Spekki Webu. Dark, industrial, relentless. 135-145 BPM.',
                 features: {
-                    target_energy: 0.95,
-                    target_valence: 0.35,
-                    target_danceability: 0.75,
-                    target_instrumentalness: 0.8,
-                    target_acousticness: 0.05
+                    energy: 0.95,
+                    valence: 0.35,
+                    danceability: 0.75,
+                    instrumentalness: 0.8,
+                    acousticness: 0.05
                 },
                 artists: ['Helena Hauff', 'I Hate Models'],
                 genres: ['techno', 'electronic']
@@ -463,10 +463,10 @@
                 name: 'Straightforward Dancefloor',
                 description: 'Job Jobse style. Pure dancefloor techno, no-nonsense. 130-138 BPM.',
                 features: {
-                    target_energy: 0.9,
-                    target_valence: 0.45,
-                    target_danceability: 0.85,
-                    target_instrumentalness: 0.7
+                    energy: 0.9,
+                    valence: 0.45,
+                    danceability: 0.85,
+                    instrumentalness: 0.7
                 },
                 artists: ['Adam Beyer', 'Amelie Lens'],
                 genres: ['techno', 'electronic']
@@ -475,10 +475,10 @@
                 name: 'Classic House',
                 description: 'Early house sound. Benny Rodrigues b2b Carista vibes. 120-128 BPM.',
                 features: {
-                    target_energy: 0.8,
-                    target_valence: 0.7,
-                    target_danceability: 0.9,
-                    target_instrumentalness: 0.4
+                    energy: 0.8,
+                    valence: 0.7,
+                    danceability: 0.9,
+                    instrumentalness: 0.4
                 },
                 artists: ['The Blessed Madonna', 'Honey Dijon'],
                 genres: ['house', 'disco', 'dance']
@@ -487,11 +487,11 @@
                 name: 'Peak Time Techno',
                 description: 'Laatste 3 sets energie! 999999999, I Hate Models, Freddy K, Kobosil. 138-145 BPM.',
                 features: {
-                    target_energy: 0.95,
-                    target_valence: 0.4,
-                    target_danceability: 0.8,
-                    target_instrumentalness: 0.85,
-                    target_acousticness: 0.05
+                    energy: 0.95,
+                    valence: 0.4,
+                    danceability: 0.8,
+                    instrumentalness: 0.85,
+                    acousticness: 0.05
                 },
                 artists: ['I Hate Models', 'Kobosil'],
                 genres: ['techno', 'electronic']
@@ -730,11 +730,7 @@
 
                 const url = `https://api.spotify.com/v1/recommendations?${params.toString()}`;
                 console.log('Recommendations URL:', url);
-                console.log('Seeds:', {
-                    artists: seedArtists,
-                    genres: params.get('seed_genres'),
-                    seedCount: seedCount
-                });
+                console.log('Target features:', targetFeatures);
 
                 const recommendations = await fetchSpotifyAPI(url);
 
