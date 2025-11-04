@@ -695,62 +695,35 @@
 
                 // Build recommendations query
                 const params = new URLSearchParams({
-                    limit: 20
+                    limit: 20,
+                    market: 'NL'  // Use Netherlands market (helps with availability)
                 });
 
+                // SIMPLE APPROACH: Use ONLY genre seeds (no artists for now)
+                // Spotify's recommendations endpoint can be picky with seed combinations
                 let seedCount = 0;
 
-                // Priority 1: Try to get artist seeds (max 2)
-                if (dnaProfile.artists && dnaProfile.artists.length > 0) {
-                    resultsDiv.innerHTML = '<div class="loading">Zoeken naar je favoriete artists... 🎵</div>';
-                    const artistIds = [];
-                    for (const artistName of dnaProfile.artists.slice(0, 2)) {
-                        const artistId = await searchArtistId(artistName);
-                        if (artistId) {
-                            artistIds.push(artistId);
-                        }
-                        if (artistIds.length >= 2) break;
-                    }
-                    if (artistIds.length > 0) {
-                        params.append('seed_artists', artistIds.join(','));
-                        seedCount += artistIds.length;
-                        console.log(`Using ${artistIds.length} artist seeds`);
-                    }
-                }
-
-                // Priority 2: Add genre seeds (fill remaining slots up to 5 total)
-                const remainingSlots = 5 - seedCount;
-                if (remainingSlots > 0 && dnaProfile.genres && dnaProfile.genres.length > 0) {
-                    const genresToUse = dnaProfile.genres.slice(0, remainingSlots);
+                if (dnaProfile.genres && dnaProfile.genres.length > 0) {
+                    // Use up to 3 genres (conservative approach)
+                    const genresToUse = dnaProfile.genres.slice(0, 3);
                     params.append('seed_genres', genresToUse.join(','));
-                    seedCount += genresToUse.length;
+                    seedCount = genresToUse.length;
                     console.log(`Using ${genresToUse.length} genre seeds: ${genresToUse.join(',')}`);
-                }
-
-                // Fallback: if no seeds at all, use basic genres
-                if (seedCount === 0) {
-                    params.append('seed_genres', 'electronic,techno');
-                    console.log('Using fallback genre seeds: electronic,techno');
+                } else {
+                    // Fallback to basic genres
+                    params.append('seed_genres', 'techno,electronic');
+                    seedCount = 2;
+                    console.log('Using fallback genre seeds: techno,electronic');
                 }
 
                 resultsDiv.innerHTML = '<div class="loading">Genereren van je perfecte playlist... 🎵</div>';
 
-                // Add target features - only use most important ones to avoid issues
-                const importantFeatures = ['energy', 'valence', 'danceability'];
-
-                Object.entries(targetFeatures).forEach(([key, value]) => {
-                    // Only add important features
-                    if (!importantFeatures.includes(key)) {
-                        return;
-                    }
-
-                    // Check if it's already prefixed
-                    if (key.startsWith('target_') || key.startsWith('min_') || key.startsWith('max_')) {
-                        params.append(key, value);
-                    } else {
-                        params.append(`target_${key}`, value);
-                    }
-                });
+                // Add target features - START WITH JUST ONE to test
+                // Once working, we can add more features
+                if (targetFeatures.energy) {
+                    params.append('target_energy', targetFeatures.energy);
+                    console.log('Using target_energy:', targetFeatures.energy);
+                }
 
                 const url = `https://api.spotify.com/v1/recommendations?${params.toString()}`;
                 console.log('Recommendations URL:', url);
