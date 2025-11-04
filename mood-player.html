@@ -317,18 +317,11 @@
                 <div class="section-title">Selecteer Je Muziek DNA</div>
                 <select class="dna-select" id="dnaSelect">
                     <option value="">Kies je muziekstijl...</option>
-                    <optgroup label="🎧 SPOTIFY DNA (Thuis/Onderweg)">
-                        <option value="spotify_melodic_techno">Melodic Techno (Stephan Bodzin, Mind Against)</option>
-                        <option value="spotify_tech_house">Tech House (CamelPhat, John Summit)</option>
-                        <option value="spotify_progressive_trance">Progressive Trance (Armin, Above & Beyond)</option>
-                        <option value="spotify_afro_world">Afro/World Influences (Black Coffee)</option>
-                        <option value="spotify_mixed">Mixed Spotify DNA (alle stijlen)</option>
-                    </optgroup>
-                    <optgroup label="🎪 FESTIVAL DNA (Live/Dancefloor)">
-                        <option value="festival_hard_techno">Hard/Industrial Techno (Helena Hauff, Bassiani)</option>
-                        <option value="festival_dancefloor">Straightforward Dancefloor (Job Jobse)</option>
-                        <option value="festival_classic_house">Classic House (Benny Rodrigues)</option>
-                        <option value="festival_peak_time">Peak Time Techno (999999999, I Hate Models)</option>
+                    <optgroup label="🎧 Electronic Music">
+                        <option value="melodic_techno">Melodic Techno</option>
+                        <option value="tech_house">Tech House</option>
+                        <option value="trance">Trance</option>
+                        <option value="hard_techno">Hard Techno</option>
                     </optgroup>
                 </select>
                 <div class="dna-description" id="dnaDescription"></div>
@@ -344,30 +337,32 @@
 
     <script>
         /*
-         * MOOD MUSIC PLAYER - Based on Your Real Music DNA
+         * MOOD MUSIC PLAYER - Spotify Integration
          *
-         * This app uses YOUR actual listening preferences (not generic profiles)
+         * This app lets you discover music based on your mood and music preferences
          *
          * DNA PROFILES SYSTEM:
-         * - Spotify DNA: What you listen to at home/solo (melodic, emotional, 122-128 BPM)
-         * - Festival DNA: What you want at festivals/clubs (hard, industrial, 130-140+ BPM)
+         * Customize the DNA_PROFILES object with your favorite artists and genres
          *
          * TO ADD NEW DNA PROFILES:
-         * 1. Add new option in the <select> dropdown (lines 318-332)
-         * 2. Add corresponding profile to DNA_PROFILES object (lines 362-494)
-         * 3. Include: name, description, features (audio features), genres (optional)
+         * 1. Add new option in the <select> dropdown (around line 318-326)
+         * 2. Add corresponding profile to DNA_PROFILES object (around line 387-438)
+         * 3. Include: name, description, features (audio features), artists, genres
          *
          * Audio features guide:
-         * - tempo: BPM (use min_tempo, target_tempo, max_tempo)
          * - energy: 0.0-1.0 (intensity)
          * - valence: 0.0-1.0 (musical positivity)
          * - danceability: 0.0-1.0 (how danceable)
          * - instrumentalness: 0.0-1.0 (more instrumental = less vocals)
          * - acousticness: 0.0-1.0 (acoustic vs electronic)
+         *
+         * NOTE: Spotify's /recommendations API is deprecated for new apps.
+         * This app uses the /search API instead.
          */
 
         // Spotify Configuration
-        const CLIENT_ID = 'b60ec7f487d541ffabf037df1517ce76';
+        // TODO: Add your Spotify Client ID here
+        const CLIENT_ID = 'YOUR_SPOTIFY_CLIENT_ID_HERE';
         const REDIRECT_URI = window.location.origin + window.location.pathname;
         const SCOPES = 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private user-library-read';
 
@@ -381,74 +376,49 @@
             romantic: { valence: 0.6, energy: 0.4, acousticness: 0.4 }
         };
 
-        // Music DNA profiles - Based on YOUR actual listening preferences
+        // Music DNA profiles - EXAMPLE profiles (replace with your own preferences)
+        // TODO: Customize these profiles with your actual music preferences
         const DNA_PROFILES = {
-            // SPOTIFY DNA (Thuis/Onderweg) - 122-128 BPM
-            spotify_melodic_techno: {
+            // Electronic Music Examples
+            melodic_techno: {
                 name: 'Melodic Techno',
-                description: '35% van je DNA. Melodisch & emotioneel. Stephan Bodzin, Mind Against, Adriatique, Kevin de Vries.',
+                description: 'Melodic and emotional techno. Example artists in this genre.',
                 features: {
                     energy: 0.7,
                     valence: 0.6,
                     danceability: 0.75,
                     instrumentalness: 0.4
                 },
-                artists: ['Stephan Bodzin', 'Mind Against', 'Adriatique'],
+                artists: ['Example Artist 1', 'Example Artist 2'],
                 genres: ['techno', 'house', 'electronic']
             },
-            spotify_tech_house: {
+            tech_house: {
                 name: 'Tech House',
-                description: '30% van je DNA. Groovy & driving. CamelPhat (11 tracks!), Hannah Wants, John Summit.',
+                description: 'Groovy and driving tech house beats.',
                 features: {
                     energy: 0.75,
                     valence: 0.65,
                     danceability: 0.85,
                     instrumentalness: 0.3
                 },
-                artists: ['CamelPhat', 'John Summit', 'Hannah Wants'],
+                artists: ['Example Artist 3', 'Example Artist 4'],
                 genres: ['house', 'techno', 'electronic']
             },
-            spotify_progressive_trance: {
-                name: 'Progressive Trance',
-                description: '25% van je DNA. Emotioneel & uplifting. Armin (7-8 jaar!), Above & Beyond, Cosmic Gate.',
+            trance: {
+                name: 'Trance',
+                description: 'Uplifting and emotional trance music.',
                 features: {
                     energy: 0.8,
                     valence: 0.75,
                     danceability: 0.7,
                     instrumentalness: 0.2
                 },
-                artists: ['Armin van Buuren', 'Above & Beyond', 'Cosmic Gate'],
+                artists: ['Example Artist 5', 'Example Artist 6'],
                 genres: ['trance', 'dance', 'electronic']
             },
-            spotify_afro_world: {
-                name: 'Afro/World',
-                description: '10% van je DNA. Vakantie vibes. Black Coffee, Brazilian funk.',
-                features: {
-                    energy: 0.7,
-                    valence: 0.8,
-                    danceability: 0.85,
-                    acousticness: 0.3
-                },
-                artists: ['Black Coffee'],
-                genres: ['house', 'dance', 'electronic']
-            },
-            spotify_mixed: {
-                name: 'Mixed Spotify DNA',
-                description: 'Alle je Spotify stijlen: Melodic Techno, Tech House, Progressive Trance. 122-128 BPM sweet spot.',
-                features: {
-                    energy: 0.75,
-                    valence: 0.65,
-                    danceability: 0.75,
-                    instrumentalness: 0.3
-                },
-                artists: ['CamelPhat', 'Stephan Bodzin', 'Armin van Buuren'],
-                genres: ['techno', 'house', 'electronic']
-            },
-
-            // FESTIVAL DNA (Live/Dancefloor) - 130-140+ BPM
-            festival_hard_techno: {
-                name: 'Hard/Industrial Techno',
-                description: 'THE TUNNEL vibes! Helena Hauff, Bassiani, Spekki Webu. Dark, industrial, relentless. 135-145 BPM.',
+            hard_techno: {
+                name: 'Hard Techno',
+                description: 'Dark, industrial, and relentless techno.',
                 features: {
                     energy: 0.95,
                     valence: 0.35,
@@ -456,44 +426,7 @@
                     instrumentalness: 0.8,
                     acousticness: 0.05
                 },
-                artists: ['Helena Hauff', 'I Hate Models'],
-                genres: ['techno', 'electronic']
-            },
-            festival_dancefloor: {
-                name: 'Straightforward Dancefloor',
-                description: 'Job Jobse style. Pure dancefloor techno, no-nonsense. 130-138 BPM.',
-                features: {
-                    energy: 0.9,
-                    valence: 0.45,
-                    danceability: 0.85,
-                    instrumentalness: 0.7
-                },
-                artists: ['Adam Beyer', 'Amelie Lens'],
-                genres: ['techno', 'electronic']
-            },
-            festival_classic_house: {
-                name: 'Classic House',
-                description: 'Early house sound. Benny Rodrigues b2b Carista vibes. 120-128 BPM.',
-                features: {
-                    energy: 0.8,
-                    valence: 0.7,
-                    danceability: 0.9,
-                    instrumentalness: 0.4
-                },
-                artists: ['The Blessed Madonna', 'Honey Dijon'],
-                genres: ['house', 'disco', 'dance']
-            },
-            festival_peak_time: {
-                name: 'Peak Time Techno',
-                description: 'Laatste 3 sets energie! 999999999, I Hate Models, Freddy K, Kobosil. 138-145 BPM.',
-                features: {
-                    energy: 0.95,
-                    valence: 0.4,
-                    danceability: 0.8,
-                    instrumentalness: 0.85,
-                    acousticness: 0.05
-                },
-                artists: ['I Hate Models', 'Kobosil'],
+                artists: ['Example Artist 7', 'Example Artist 8'],
                 genres: ['techno', 'electronic']
             }
         };
