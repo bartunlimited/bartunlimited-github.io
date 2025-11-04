@@ -756,9 +756,15 @@
                     }
                 });
 
-                const recommendations = await fetchSpotifyAPI(
-                    `https://api.spotify.com/v1/recommendations?${params.toString()}`
-                );
+                const url = `https://api.spotify.com/v1/recommendations?${params.toString()}`;
+                console.log('Recommendations URL:', url);
+                console.log('Seeds:', {
+                    artists: seedArtists,
+                    genres: params.get('seed_genres'),
+                    seedCount: seedCount
+                });
+
+                const recommendations = await fetchSpotifyAPI(url);
 
                 displayResults(recommendations.tracks, dnaProfile.name);
             } catch (error) {
