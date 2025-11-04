@@ -698,21 +698,49 @@
                     limit: 20
                 });
 
-                // Use genres from DNA profile (up to 5 seeds total)
-                console.log('DNA Profile:', selectedDNA);
-                const genresToUse = dnaProfile.genres ? dnaProfile.genres.slice(0, 5) : ['electronic'];
-                params.append('seed_genres', genresToUse.join(','));
-                console.log('Using seed_genres:', genresToUse.join(','));
+                let seedCount = 0;
+
+                // Priority 1: Try to get artist seeds (max 2)
+                if (dnaProfile.artists && dnaProfile.artists.length > 0) {
+                    resultsDiv.innerHTML = '<div class="loading">Zoeken naar je favoriete artists... 🎵</div>';
+                    const artistIds = [];
+                    for (const artistName of dnaProfile.artists.slice(0, 2)) {
+                        const artistId = await searchArtistId(artistName);
+                        if (artistId) {
+                            artistIds.push(artistId);
+                        }
+                        if (artistIds.length >= 2) break;
+                    }
+                    if (artistIds.length > 0) {
+                        params.append('seed_artists', artistIds.join(','));
+                        seedCount += artistIds.length;
+                        console.log(`Using ${artistIds.length} artist seeds`);
+                    }
+                }
+
+                // Priority 2: Add genre seeds (fill remaining slots up to 5 total)
+                const remainingSlots = 5 - seedCount;
+                if (remainingSlots > 0 && dnaProfile.genres && dnaProfile.genres.length > 0) {
+                    const genresToUse = dnaProfile.genres.slice(0, remainingSlots);
+                    params.append('seed_genres', genresToUse.join(','));
+                    seedCount += genresToUse.length;
+                    console.log(`Using ${genresToUse.length} genre seeds: ${genresToUse.join(',')}`);
+                }
+
+                // Fallback: if no seeds at all, use basic genres
+                if (seedCount === 0) {
+                    params.append('seed_genres', 'electronic,techno');
+                    console.log('Using fallback genre seeds: electronic,techno');
+                }
 
                 resultsDiv.innerHTML = '<div class="loading">Genereren van je perfecte playlist... 🎵</div>';
 
-                // Add target/min/max features
-                // Note: mode parameter sometimes causes issues, so we skip it
-                const UNSUPPORTED_PARAMS = ['mode'];
+                // Add target features - only use most important ones to avoid issues
+                const importantFeatures = ['energy', 'valence', 'danceability'];
 
                 Object.entries(targetFeatures).forEach(([key, value]) => {
-                    // Skip unsupported params
-                    if (UNSUPPORTED_PARAMS.includes(key)) {
+                    // Only add important features
+                    if (!importantFeatures.includes(key)) {
                         return;
                     }
 
@@ -727,8 +755,13 @@
                 const url = `https://api.spotify.com/v1/recommendations?${params.toString()}`;
                 console.log('Recommendations URL:', url);
                 console.log('Target features:', targetFeatures);
+                console.log('Total seeds used:', seedCount);
 
                 const recommendations = await fetchSpotifyAPI(url);
+
+                if (!recommendations.tracks || recommendations.tracks.length === 0) {
+                    throw new Error('No recommendations returned from Spotify');
+                }
 
                 displayResults(recommendations.tracks, dnaProfile.name);
             } catch (error) {
@@ -736,7 +769,7 @@
                 resultsDiv.innerHTML = `
                     <div class="error">
                         <strong>Error:</strong> ${error.message}<br><br>
-                        <small>Note: Make sure you've set up your Spotify Client ID and have the necessary API permissions.</small>
+                        <small>Check browser console for more details. Note: Spotify token expires after 1 hour.</small>
                     </div>
                 `;
             }
