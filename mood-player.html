@@ -373,8 +373,8 @@
 
         // Mood to audio features mapping
         const MOOD_FEATURES = {
-            happy: { valence: 0.8, energy: 0.7, mode: 1 },
-            sad: { valence: 0.2, energy: 0.3, mode: 0 },
+            happy: { valence: 0.8, energy: 0.7 },
+            sad: { valence: 0.2, energy: 0.3 },
             energetic: { valence: 0.7, energy: 0.9, danceability: 0.8 },
             chill: { valence: 0.5, energy: 0.3, acousticness: 0.6 },
             focused: { valence: 0.5, energy: 0.5, instrumentalness: 0.5 },
@@ -711,8 +711,8 @@
                 resultsDiv.innerHTML = '<div class="loading">Genereren van je perfecte playlist... 🎵</div>';
 
                 // Add target/min/max features
-                // Note: Spotify doesn't support tempo in recommendations API, so we filter it out
-                const UNSUPPORTED_PARAMS = ['tempo', 'min_tempo', 'max_tempo', 'target_tempo'];
+                // Note: Spotify doesn't support tempo or mode parameters
+                const UNSUPPORTED_PARAMS = ['tempo', 'min_tempo', 'max_tempo', 'target_tempo', 'mode'];
 
                 Object.entries(targetFeatures).forEach(([key, value]) => {
                     // Skip unsupported params (tempo)
