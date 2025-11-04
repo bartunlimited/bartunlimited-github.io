@@ -396,7 +396,7 @@
                     target_danceability: 0.75,
                     target_instrumentalness: 0.4
                 },
-                genres: ['techno', 'melodic-techno', 'progressive-house']
+                genres: ['techno', 'electronic', 'progressive-house']
             },
             spotify_tech_house: {
                 name: 'Tech House',
@@ -410,7 +410,7 @@
                     target_danceability: 0.85,
                     target_instrumentalness: 0.3
                 },
-                genres: ['tech-house', 'house', 'progressive-house']
+                genres: ['house', 'deep-house', 'techno']
             },
             spotify_progressive_trance: {
                 name: 'Progressive Trance',
@@ -424,7 +424,7 @@
                     target_danceability: 0.7,
                     target_instrumentalness: 0.2
                 },
-                genres: ['trance', 'progressive-trance', 'uplifting-trance']
+                genres: ['trance', 'progressive-house', 'dance']
             },
             spotify_afro_world: {
                 name: 'Afro/World',
@@ -438,7 +438,7 @@
                     target_danceability: 0.85,
                     target_acousticness: 0.3
                 },
-                genres: ['afro-house', 'world-music', 'brazil']
+                genres: ['afrobeat', 'world-music', 'brazil']
             },
             spotify_mixed: {
                 name: 'Mixed Spotify DNA',
@@ -452,7 +452,7 @@
                     target_danceability: 0.75,
                     target_instrumentalness: 0.3
                 },
-                genres: ['techno', 'tech-house', 'trance', 'progressive-house']
+                genres: ['techno', 'house', 'trance', 'electronic']
             },
 
             // FESTIVAL DNA (Live/Dancefloor) - 130-140+ BPM
@@ -469,7 +469,7 @@
                     target_instrumentalness: 0.8,
                     target_acousticness: 0.05
                 },
-                genres: ['hard-techno', 'industrial', 'techno']
+                genres: ['techno', 'industrial', 'electronic']
             },
             festival_dancefloor: {
                 name: 'Straightforward Dancefloor',
@@ -512,7 +512,7 @@
                     target_instrumentalness: 0.85,
                     target_acousticness: 0.05
                 },
-                genres: ['hard-techno', 'techno', 'industrial']
+                genres: ['techno', 'industrial', 'electronic']
             }
         };
 
@@ -726,7 +726,15 @@
                 }
 
                 // Add target/min/max features
+                // Note: Spotify doesn't support tempo in recommendations API, so we filter it out
+                const UNSUPPORTED_PARAMS = ['tempo', 'min_tempo', 'max_tempo', 'target_tempo'];
+
                 Object.entries(targetFeatures).forEach(([key, value]) => {
+                    // Skip unsupported params (tempo)
+                    if (UNSUPPORTED_PARAMS.includes(key)) {
+                        return;
+                    }
+
                     // Check if it's already prefixed
                     if (key.startsWith('target_') || key.startsWith('min_') || key.startsWith('max_')) {
                         params.append(key, value);
