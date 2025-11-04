@@ -388,71 +388,61 @@
                 name: 'Melodic Techno',
                 description: '35% van je DNA. Melodisch & emotioneel. Stephan Bodzin, Mind Against, Adriatique, Kevin de Vries.',
                 features: {
-                    target_tempo: 125,
-                    min_tempo: 122,
-                    max_tempo: 128,
                     target_energy: 0.7,
                     target_valence: 0.6,
                     target_danceability: 0.75,
                     target_instrumentalness: 0.4
                 },
-                genres: ['techno', 'electronic', 'progressive-house']
+                artists: ['Stephan Bodzin', 'Mind Against', 'Adriatique'],
+                genres: ['techno', 'house', 'electronic']
             },
             spotify_tech_house: {
                 name: 'Tech House',
                 description: '30% van je DNA. Groovy & driving. CamelPhat (11 tracks!), Hannah Wants, John Summit.',
                 features: {
-                    target_tempo: 126,
-                    min_tempo: 124,
-                    max_tempo: 128,
                     target_energy: 0.75,
                     target_valence: 0.65,
                     target_danceability: 0.85,
                     target_instrumentalness: 0.3
                 },
-                genres: ['house', 'deep-house', 'techno']
+                artists: ['CamelPhat', 'John Summit', 'Hannah Wants'],
+                genres: ['house', 'techno', 'electronic']
             },
             spotify_progressive_trance: {
                 name: 'Progressive Trance',
                 description: '25% van je DNA. Emotioneel & uplifting. Armin (7-8 jaar!), Above & Beyond, Cosmic Gate.',
                 features: {
-                    target_tempo: 128,
-                    min_tempo: 126,
-                    max_tempo: 138,
                     target_energy: 0.8,
                     target_valence: 0.75,
                     target_danceability: 0.7,
                     target_instrumentalness: 0.2
                 },
-                genres: ['trance', 'progressive-house', 'dance']
+                artists: ['Armin van Buuren', 'Above & Beyond', 'Cosmic Gate'],
+                genres: ['trance', 'dance', 'electronic']
             },
             spotify_afro_world: {
                 name: 'Afro/World',
                 description: '10% van je DNA. Vakantie vibes. Black Coffee, Brazilian funk.',
                 features: {
-                    target_tempo: 122,
-                    min_tempo: 118,
-                    max_tempo: 126,
                     target_energy: 0.7,
                     target_valence: 0.8,
                     target_danceability: 0.85,
                     target_acousticness: 0.3
                 },
-                genres: ['afrobeat', 'world-music', 'brazil']
+                artists: ['Black Coffee'],
+                genres: ['house', 'dance', 'electronic']
             },
             spotify_mixed: {
                 name: 'Mixed Spotify DNA',
                 description: 'Alle je Spotify stijlen: Melodic Techno, Tech House, Progressive Trance. 122-128 BPM sweet spot.',
                 features: {
-                    target_tempo: 126,
-                    min_tempo: 122,
-                    max_tempo: 128,
                     target_energy: 0.75,
                     target_valence: 0.65,
                     target_danceability: 0.75,
                     target_instrumentalness: 0.3
                 },
-                genres: ['techno', 'house', 'trance', 'electronic']
+                artists: ['CamelPhat', 'Stephan Bodzin', 'Armin van Buuren'],
+                genres: ['techno', 'house', 'electronic']
             },
 
             // FESTIVAL DNA (Live/Dancefloor) - 130-140+ BPM
@@ -460,59 +450,51 @@
                 name: 'Hard/Industrial Techno',
                 description: 'THE TUNNEL vibes! Helena Hauff, Bassiani, Spekki Webu. Dark, industrial, relentless. 135-145 BPM.',
                 features: {
-                    target_tempo: 140,
-                    min_tempo: 135,
-                    max_tempo: 145,
                     target_energy: 0.95,
                     target_valence: 0.35,
                     target_danceability: 0.75,
                     target_instrumentalness: 0.8,
                     target_acousticness: 0.05
                 },
-                genres: ['techno', 'industrial', 'electronic']
+                artists: ['Helena Hauff', 'I Hate Models'],
+                genres: ['techno', 'electronic']
             },
             festival_dancefloor: {
                 name: 'Straightforward Dancefloor',
                 description: 'Job Jobse style. Pure dancefloor techno, no-nonsense. 130-138 BPM.',
                 features: {
-                    target_tempo: 135,
-                    min_tempo: 130,
-                    max_tempo: 138,
                     target_energy: 0.9,
                     target_valence: 0.45,
                     target_danceability: 0.85,
                     target_instrumentalness: 0.7
                 },
-                genres: ['techno', 'minimal-techno', 'detroit-techno']
+                artists: ['Adam Beyer', 'Amelie Lens'],
+                genres: ['techno', 'electronic']
             },
             festival_classic_house: {
                 name: 'Classic House',
                 description: 'Early house sound. Benny Rodrigues b2b Carista vibes. 120-128 BPM.',
                 features: {
-                    target_tempo: 124,
-                    min_tempo: 120,
-                    max_tempo: 128,
                     target_energy: 0.8,
                     target_valence: 0.7,
                     target_danceability: 0.9,
                     target_instrumentalness: 0.4
                 },
-                genres: ['house', 'deep-house', 'disco']
+                artists: ['The Blessed Madonna', 'Honey Dijon'],
+                genres: ['house', 'disco', 'dance']
             },
             festival_peak_time: {
                 name: 'Peak Time Techno',
                 description: 'Laatste 3 sets energie! 999999999, I Hate Models, Freddy K, Kobosil. 138-145 BPM.',
                 features: {
-                    target_tempo: 142,
-                    min_tempo: 138,
-                    max_tempo: 145,
                     target_energy: 0.95,
                     target_valence: 0.4,
                     target_danceability: 0.8,
                     target_instrumentalness: 0.85,
                     target_acousticness: 0.05
                 },
-                genres: ['techno', 'industrial', 'electronic']
+                artists: ['I Hate Models', 'Kobosil'],
+                genres: ['techno', 'electronic']
             }
         };
 
@@ -684,6 +666,20 @@
             return response.json();
         }
 
+        async function searchArtistId(artistName) {
+            try {
+                const result = await fetchSpotifyAPI(
+                    `https://api.spotify.com/v1/search?q=${encodeURIComponent(artistName)}&type=artist&limit=1`
+                );
+                if (result.artists && result.artists.items.length > 0) {
+                    return result.artists.items[0].id;
+                }
+            } catch (error) {
+                console.log(`Could not find artist: ${artistName}`);
+            }
+            return null;
+        }
+
         async function generatePlaylist() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '<div class="loading">Finding perfect tracks for your mood... 🎵</div>';
@@ -697,33 +693,50 @@
                 // Merge features (DNA takes precedence for overlaps)
                 const targetFeatures = { ...moodFeatures, ...dnaFeatures };
 
-                // Get user's top tracks to use as seeds (or use genre seeds)
-                let seedTracks = '';
-                try {
-                    const topTracks = await fetchSpotifyAPI('https://api.spotify.com/v1/me/top/tracks?limit=5&time_range=short_term');
-                    seedTracks = topTracks.items.slice(0, 2).map(t => t.id).join(',');
-                } catch (error) {
-                    console.log('Could not get top tracks, using genre seeds only');
-                }
-
                 // Build recommendations query
                 const params = new URLSearchParams({
                     limit: 20
                 });
 
-                // Add seed tracks OR genres (need at least one seed)
-                if (seedTracks) {
-                    params.append('seed_tracks', seedTracks);
+                // Get artist IDs from DNA profile
+                let seedArtists = '';
+                if (dnaProfile.artists && dnaProfile.artists.length > 0) {
+                    resultsDiv.innerHTML = '<div class="loading">Zoeken naar je favoriete artists... 🎵</div>';
+                    const artistIds = [];
+                    for (const artistName of dnaProfile.artists.slice(0, 2)) {
+                        const artistId = await searchArtistId(artistName);
+                        if (artistId) {
+                            artistIds.push(artistId);
+                        }
+                    }
+                    if (artistIds.length > 0) {
+                        seedArtists = artistIds.join(',');
+                    }
                 }
-                if (dnaProfile.genres && dnaProfile.genres.length > 0) {
-                    // Add up to 3 genre seeds (max 5 seeds total including tracks)
-                    const genreSeeds = dnaProfile.genres.slice(0, seedTracks ? 3 : 5).join(',');
+
+                // Add seeds in priority order (max 5 total)
+                let seedCount = 0;
+
+                // Priority 1: Artist seeds from DNA
+                if (seedArtists && seedCount < 5) {
+                    params.append('seed_artists', seedArtists);
+                    seedCount += seedArtists.split(',').length;
+                }
+
+                // Priority 2: Genre seeds
+                if (dnaProfile.genres && dnaProfile.genres.length > 0 && seedCount < 5) {
+                    const remainingSlots = 5 - seedCount;
+                    const genreSeeds = dnaProfile.genres.slice(0, Math.min(remainingSlots, 3)).join(',');
                     params.append('seed_genres', genreSeeds);
+                    seedCount += genreSeeds.split(',').length;
                 }
+
                 // Fallback if no seeds available
-                if (!seedTracks && (!dnaProfile.genres || dnaProfile.genres.length === 0)) {
-                    params.append('seed_tracks', '0c6xIDDpzE81m2q797ordA');
+                if (seedCount === 0) {
+                    params.append('seed_genres', 'electronic');
                 }
+
+                resultsDiv.innerHTML = '<div class="loading">Genereren van je perfecte playlist... 🎵</div>';
 
                 // Add target/min/max features
                 // Note: Spotify doesn't support tempo in recommendations API, so we filter it out
