@@ -271,7 +271,7 @@
     <div class="container">
         <div class="spotify-logo">&#x1F3B5;</div>
         <h1>Mood Music Player</h1>
-        <p class="subtitle">Tell me your mood, I'll play the perfect music</p>
+        <p class="subtitle">Vertel je mood, krijg de perfecte muziek op basis van je DNA</p>
 
         <div id="loginSection" class="login-section" style="display: none;">
             <p style="margin-bottom: 20px; color: #666;">Connect your Spotify account to get started</p>
@@ -314,17 +314,22 @@
             </div>
 
             <div class="section">
-                <div class="section-title">Select Your Music DNA</div>
+                <div class="section-title">Selecteer Je Muziek DNA</div>
                 <select class="dna-select" id="dnaSelect">
-                    <option value="">Choose your music style...</option>
-                    <option value="dance_party">Dance Party</option>
-                    <option value="acoustic_vibes">Acoustic Vibes</option>
-                    <option value="electronic_focus">Electronic Focus</option>
-                    <option value="vocal_power">Vocal Power</option>
-                    <option value="upbeat_pop">Upbeat Pop</option>
-                    <option value="indie_alternative">Indie Alternative</option>
-                    <option value="hip_hop_rnb">Hip Hop & R&B</option>
-                    <option value="rock_energy">Rock Energy</option>
+                    <option value="">Kies je muziekstijl...</option>
+                    <optgroup label="🎧 SPOTIFY DNA (Thuis/Onderweg)">
+                        <option value="spotify_melodic_techno">Melodic Techno (Stephan Bodzin, Mind Against)</option>
+                        <option value="spotify_tech_house">Tech House (CamelPhat, John Summit)</option>
+                        <option value="spotify_progressive_trance">Progressive Trance (Armin, Above & Beyond)</option>
+                        <option value="spotify_afro_world">Afro/World Influences (Black Coffee)</option>
+                        <option value="spotify_mixed">Mixed Spotify DNA (alle stijlen)</option>
+                    </optgroup>
+                    <optgroup label="🎪 FESTIVAL DNA (Live/Dancefloor)">
+                        <option value="festival_hard_techno">Hard/Industrial Techno (Helena Hauff, Bassiani)</option>
+                        <option value="festival_dancefloor">Straightforward Dancefloor (Job Jobse)</option>
+                        <option value="festival_classic_house">Classic House (Benny Rodrigues)</option>
+                        <option value="festival_peak_time">Peak Time Techno (999999999, I Hate Models)</option>
+                    </optgroup>
                 </select>
                 <div class="dna-description" id="dnaDescription"></div>
             </div>
@@ -338,6 +343,29 @@
     </div>
 
     <script>
+        /*
+         * MOOD MUSIC PLAYER - Based on Your Real Music DNA
+         *
+         * This app uses YOUR actual listening preferences (not generic profiles)
+         *
+         * DNA PROFILES SYSTEM:
+         * - Spotify DNA: What you listen to at home/solo (melodic, emotional, 122-128 BPM)
+         * - Festival DNA: What you want at festivals/clubs (hard, industrial, 130-140+ BPM)
+         *
+         * TO ADD NEW DNA PROFILES:
+         * 1. Add new option in the <select> dropdown (lines 318-332)
+         * 2. Add corresponding profile to DNA_PROFILES object (lines 362-494)
+         * 3. Include: name, description, features (audio features), genres (optional)
+         *
+         * Audio features guide:
+         * - tempo: BPM (use min_tempo, target_tempo, max_tempo)
+         * - energy: 0.0-1.0 (intensity)
+         * - valence: 0.0-1.0 (musical positivity)
+         * - danceability: 0.0-1.0 (how danceable)
+         * - instrumentalness: 0.0-1.0 (more instrumental = less vocals)
+         * - acousticness: 0.0-1.0 (acoustic vs electronic)
+         */
+
         // Spotify Configuration
         const CLIENT_ID = 'YOUR_SPOTIFY_CLIENT_ID'; // You'll need to set this
         const REDIRECT_URI = window.location.origin + window.location.pathname;
@@ -353,47 +381,138 @@
             romantic: { valence: 0.6, energy: 0.4, acousticness: 0.4 }
         };
 
-        // Music DNA profiles
+        // Music DNA profiles - Based on YOUR actual listening preferences
         const DNA_PROFILES = {
-            dance_party: {
-                name: 'Dance Party',
-                description: 'High energy tracks perfect for dancing and parties',
-                features: { danceability: 0.9, energy: 0.9, valence: 0.8 }
+            // SPOTIFY DNA (Thuis/Onderweg) - 122-128 BPM
+            spotify_melodic_techno: {
+                name: 'Melodic Techno',
+                description: '35% van je DNA. Melodisch & emotioneel. Stephan Bodzin, Mind Against, Adriatique, Kevin de Vries.',
+                features: {
+                    target_tempo: 125,
+                    min_tempo: 122,
+                    max_tempo: 128,
+                    target_energy: 0.7,
+                    target_valence: 0.6,
+                    target_danceability: 0.75,
+                    target_instrumentalness: 0.4
+                },
+                genres: ['techno', 'melodic-techno', 'progressive-house']
             },
-            acoustic_vibes: {
-                name: 'Acoustic Vibes',
-                description: 'Unplugged, organic sounds with acoustic instruments',
-                features: { acousticness: 0.9, energy: 0.4, instrumentalness: 0.3 }
+            spotify_tech_house: {
+                name: 'Tech House',
+                description: '30% van je DNA. Groovy & driving. CamelPhat (11 tracks!), Hannah Wants, John Summit.',
+                features: {
+                    target_tempo: 126,
+                    min_tempo: 124,
+                    max_tempo: 128,
+                    target_energy: 0.75,
+                    target_valence: 0.65,
+                    target_danceability: 0.85,
+                    target_instrumentalness: 0.3
+                },
+                genres: ['tech-house', 'house', 'progressive-house']
             },
-            electronic_focus: {
-                name: 'Electronic Focus',
-                description: 'Electronic beats to help you concentrate',
-                features: { instrumentalness: 0.7, energy: 0.6, speechiness: 0.1 }
+            spotify_progressive_trance: {
+                name: 'Progressive Trance',
+                description: '25% van je DNA. Emotioneel & uplifting. Armin (7-8 jaar!), Above & Beyond, Cosmic Gate.',
+                features: {
+                    target_tempo: 128,
+                    min_tempo: 126,
+                    max_tempo: 138,
+                    target_energy: 0.8,
+                    target_valence: 0.75,
+                    target_danceability: 0.7,
+                    target_instrumentalness: 0.2
+                },
+                genres: ['trance', 'progressive-trance', 'uplifting-trance']
             },
-            vocal_power: {
-                name: 'Vocal Power',
-                description: 'Strong vocals and lyrical content',
-                features: { speechiness: 0.4, acousticness: 0.5, instrumentalness: 0.1 }
+            spotify_afro_world: {
+                name: 'Afro/World',
+                description: '10% van je DNA. Vakantie vibes. Black Coffee, Brazilian funk.',
+                features: {
+                    target_tempo: 122,
+                    min_tempo: 118,
+                    max_tempo: 126,
+                    target_energy: 0.7,
+                    target_valence: 0.8,
+                    target_danceability: 0.85,
+                    target_acousticness: 0.3
+                },
+                genres: ['afro-house', 'world-music', 'brazil']
             },
-            upbeat_pop: {
-                name: 'Upbeat Pop',
-                description: 'Catchy, feel-good pop music',
-                features: { valence: 0.8, danceability: 0.7, energy: 0.7 }
+            spotify_mixed: {
+                name: 'Mixed Spotify DNA',
+                description: 'Alle je Spotify stijlen: Melodic Techno, Tech House, Progressive Trance. 122-128 BPM sweet spot.',
+                features: {
+                    target_tempo: 126,
+                    min_tempo: 122,
+                    max_tempo: 128,
+                    target_energy: 0.75,
+                    target_valence: 0.65,
+                    target_danceability: 0.75,
+                    target_instrumentalness: 0.3
+                },
+                genres: ['techno', 'tech-house', 'trance', 'progressive-house']
             },
-            indie_alternative: {
-                name: 'Indie Alternative',
-                description: 'Alternative and indie rock vibes',
-                features: { valence: 0.5, energy: 0.6, acousticness: 0.4 }
+
+            // FESTIVAL DNA (Live/Dancefloor) - 130-140+ BPM
+            festival_hard_techno: {
+                name: 'Hard/Industrial Techno',
+                description: 'THE TUNNEL vibes! Helena Hauff, Bassiani, Spekki Webu. Dark, industrial, relentless. 135-145 BPM.',
+                features: {
+                    target_tempo: 140,
+                    min_tempo: 135,
+                    max_tempo: 145,
+                    target_energy: 0.95,
+                    target_valence: 0.35,
+                    target_danceability: 0.75,
+                    target_instrumentalness: 0.8,
+                    target_acousticness: 0.05
+                },
+                genres: ['hard-techno', 'industrial', 'techno']
             },
-            hip_hop_rnb: {
-                name: 'Hip Hop & R&B',
-                description: 'Urban beats and smooth R&B grooves',
-                features: { speechiness: 0.5, danceability: 0.7, energy: 0.6 }
+            festival_dancefloor: {
+                name: 'Straightforward Dancefloor',
+                description: 'Job Jobse style. Pure dancefloor techno, no-nonsense. 130-138 BPM.',
+                features: {
+                    target_tempo: 135,
+                    min_tempo: 130,
+                    max_tempo: 138,
+                    target_energy: 0.9,
+                    target_valence: 0.45,
+                    target_danceability: 0.85,
+                    target_instrumentalness: 0.7
+                },
+                genres: ['techno', 'minimal-techno', 'detroit-techno']
             },
-            rock_energy: {
-                name: 'Rock Energy',
-                description: 'High energy rock and alternative',
-                features: { energy: 0.9, loudness: 0.8, valence: 0.6 }
+            festival_classic_house: {
+                name: 'Classic House',
+                description: 'Early house sound. Benny Rodrigues b2b Carista vibes. 120-128 BPM.',
+                features: {
+                    target_tempo: 124,
+                    min_tempo: 120,
+                    max_tempo: 128,
+                    target_energy: 0.8,
+                    target_valence: 0.7,
+                    target_danceability: 0.9,
+                    target_instrumentalness: 0.4
+                },
+                genres: ['house', 'deep-house', 'disco']
+            },
+            festival_peak_time: {
+                name: 'Peak Time Techno',
+                description: 'Laatste 3 sets energie! 999999999, I Hate Models, Freddy K, Kobosil. 138-145 BPM.',
+                features: {
+                    target_tempo: 142,
+                    min_tempo: 138,
+                    max_tempo: 145,
+                    target_energy: 0.95,
+                    target_valence: 0.4,
+                    target_danceability: 0.8,
+                    target_instrumentalness: 0.85,
+                    target_acousticness: 0.05
+                },
+                genres: ['hard-techno', 'techno', 'industrial']
             }
         };
 
@@ -537,33 +656,57 @@
             resultsDiv.innerHTML = '<div class="loading">Finding perfect tracks for your mood... 🎵</div>';
 
             try {
-                // Combine mood and DNA features
+                // Get mood and DNA profile
                 const moodFeatures = MOOD_FEATURES[selectedMood];
-                const dnaFeatures = DNA_PROFILES[selectedDNA].features;
+                const dnaProfile = DNA_PROFILES[selectedDNA];
+                const dnaFeatures = dnaProfile.features;
 
                 // Merge features (DNA takes precedence for overlaps)
                 const targetFeatures = { ...moodFeatures, ...dnaFeatures };
 
-                // Get user's top tracks to use as seeds
-                const topTracks = await fetchSpotifyAPI('https://api.spotify.com/v1/me/top/tracks?limit=5&time_range=short_term');
-                const seedTracks = topTracks.items.slice(0, 2).map(t => t.id).join(',');
+                // Get user's top tracks to use as seeds (or use genre seeds)
+                let seedTracks = '';
+                try {
+                    const topTracks = await fetchSpotifyAPI('https://api.spotify.com/v1/me/top/tracks?limit=5&time_range=short_term');
+                    seedTracks = topTracks.items.slice(0, 2).map(t => t.id).join(',');
+                } catch (error) {
+                    console.log('Could not get top tracks, using genre seeds only');
+                }
 
                 // Build recommendations query
                 const params = new URLSearchParams({
-                    limit: 20,
-                    seed_tracks: seedTracks || '0c6xIDDpzE81m2q797ordA', // fallback seed
+                    limit: 20
                 });
 
-                // Add target features
+                // Add seed tracks OR genres (need at least one seed)
+                if (seedTracks) {
+                    params.append('seed_tracks', seedTracks);
+                }
+                if (dnaProfile.genres && dnaProfile.genres.length > 0) {
+                    // Add up to 3 genre seeds (max 5 seeds total including tracks)
+                    const genreSeeds = dnaProfile.genres.slice(0, seedTracks ? 3 : 5).join(',');
+                    params.append('seed_genres', genreSeeds);
+                }
+                // Fallback if no seeds available
+                if (!seedTracks && (!dnaProfile.genres || dnaProfile.genres.length === 0)) {
+                    params.append('seed_tracks', '0c6xIDDpzE81m2q797ordA');
+                }
+
+                // Add target/min/max features
                 Object.entries(targetFeatures).forEach(([key, value]) => {
-                    params.append(`target_${key}`, value);
+                    // Check if it's already prefixed
+                    if (key.startsWith('target_') || key.startsWith('min_') || key.startsWith('max_')) {
+                        params.append(key, value);
+                    } else {
+                        params.append(`target_${key}`, value);
+                    }
                 });
 
                 const recommendations = await fetchSpotifyAPI(
                     `https://api.spotify.com/v1/recommendations?${params.toString()}`
                 );
 
-                displayResults(recommendations.tracks);
+                displayResults(recommendations.tracks, dnaProfile.name);
             } catch (error) {
                 console.error('Error generating playlist:', error);
                 resultsDiv.innerHTML = `
@@ -575,20 +718,19 @@
             }
         }
 
-        function displayResults(tracks) {
+        function displayResults(tracks, dnaName) {
             const resultsDiv = document.getElementById('results');
 
             if (!tracks || tracks.length === 0) {
-                resultsDiv.innerHTML = '<div class="loading">No tracks found. Try different settings!</div>';
+                resultsDiv.innerHTML = '<div class="loading">Geen tracks gevonden. Probeer andere instellingen!</div>';
                 return;
             }
 
             const moodName = selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1);
-            const dnaName = DNA_PROFILES[selectedDNA].name;
 
             resultsDiv.innerHTML = `
                 <div style="margin-bottom: 20px;">
-                    <div class="section-title">Your ${moodName} ${dnaName} Playlist</div>
+                    <div class="section-title">Je ${moodName} ${dnaName} Playlist</div>
                 </div>
                 ${tracks.map(track => `
                     <div class="track-item">

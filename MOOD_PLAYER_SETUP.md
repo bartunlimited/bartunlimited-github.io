@@ -67,14 +67,55 @@ Replace `YOURUSERNAME` with your GitHub username.
 
 ## Music DNA Profiles Explained
 
-- **Dance Party**: High energy, highly danceable tracks
-- **Acoustic Vibes**: Unplugged, organic acoustic sounds
-- **Electronic Focus**: Instrumental electronic beats for concentration
-- **Vocal Power**: Strong vocals and lyrical content
-- **Upbeat Pop**: Catchy, feel-good pop music
-- **Indie Alternative**: Alternative and indie rock vibes
-- **Hip Hop & R&B**: Urban beats and smooth R&B
-- **Rock Energy**: High energy rock tracks
+**BELANGRIJK:** Deze app gebruikt JOUW echte muziek DNA, niet generieke profielen!
+
+### 🎧 SPOTIFY DNA (Thuis/Onderweg)
+Voor solo listening, headphones, thuis muziek luisteren:
+
+- **Melodic Techno** (35% van je DNA)
+  - Stephan Bodzin, Mind Against, Adriatique, Kevin de Vries
+  - 122-128 BPM, melodisch & emotioneel
+
+- **Tech House** (30% van je DNA)
+  - CamelPhat, Hannah Wants, John Summit
+  - Groovy & driving beats
+
+- **Progressive Trance** (25% van je DNA)
+  - Armin van Buuren, Above & Beyond, Cosmic Gate
+  - Emotioneel & uplifting
+
+- **Afro/World Influences** (10% van je DNA)
+  - Black Coffee, Brazilian funk
+  - Vakantie vibes
+
+- **Mixed Spotify DNA**
+  - Combinatie van alle Spotify stijlen
+
+### 🎪 FESTIVAL DNA (Live/Dancefloor)
+Voor festivals, clubs, dancefloor:
+
+- **Hard/Industrial Techno**
+  - Helena Hauff, Bassiani, Spekki Webu
+  - THE TUNNEL vibes, 135-145 BPM, dark & relentless
+
+- **Straightforward Dancefloor**
+  - Job Jobse style
+  - Pure techno, no-nonsense, 130-138 BPM
+
+- **Classic House**
+  - Benny Rodrigues b2b Carista style
+  - Early house sound, 120-128 BPM
+
+- **Peak Time Techno**
+  - 999999999, I Hate Models, Freddy K, Kobosil
+  - Late night energy, 138-145 BPM
+
+### Het Verschil: Waarom twee profielen?
+
+**Spotify DNA** = Solo listening, emotioneel, melodisch, 122-128 BPM
+**Festival DNA** = Collective experience, pure energy, harder, 130-140+ BPM
+
+Dit is normaal! Thuis luister je Miles Davis, op feestjes wil je hard techno.
 
 ## How the Mood Mapping Works
 
@@ -131,13 +172,61 @@ This gives you a quick-launch icon like a native app!
 - The app runs entirely in your browser
 - No data is sent to any third-party servers
 
+## Adding Your Own DNA Profiles
+
+Je kunt nieuwe DNA profielen toevoegen! Volg deze stappen:
+
+### Stap 1: Open mood-player.html
+
+### Stap 2: Voeg optie toe aan dropdown (regel ~318-332)
+
+```html
+<optgroup label="🎵 JOUW NIEUWE CATEGORIE">
+    <option value="jouw_profiel_id">Jouw Profiel Naam</option>
+</optgroup>
+```
+
+### Stap 3: Voeg profiel toe aan DNA_PROFILES (regel ~362-494)
+
+```javascript
+jouw_profiel_id: {
+    name: 'Jouw Profiel Naam',
+    description: 'Beschrijving van je profiel',
+    features: {
+        target_tempo: 125,        // BPM
+        min_tempo: 120,
+        max_tempo: 130,
+        target_energy: 0.7,       // 0.0-1.0
+        target_valence: 0.6,      // 0.0-1.0 (positivity)
+        target_danceability: 0.75,
+        target_instrumentalness: 0.4  // hoger = minder vocals
+    },
+    genres: ['genre1', 'genre2', 'genre3']  // optioneel
+}
+```
+
+### Audio Features Guide:
+
+- **tempo**: BPM (beats per minute)
+- **energy**: 0.0-1.0 (intensity & activity)
+- **valence**: 0.0-1.0 (musical positivity, higher = happier)
+- **danceability**: 0.0-1.0 (how suitable for dancing)
+- **instrumentalness**: 0.0-1.0 (hoger = meer instrumental, minder vocals)
+- **acousticness**: 0.0-1.0 (acoustic vs electronic)
+- **speechiness**: 0.0-1.0 (presence of spoken words)
+
+### Spotify Genres:
+
+Gebruik genres zoals: `techno`, `house`, `trance`, `hard-techno`, `melodic-techno`,
+`tech-house`, `progressive-house`, `afro-house`, `deep-house`, `disco`, etc.
+
 ## Future Enhancements
 
 Possible additions:
 - Save generated playlists to your Spotify account
-- Create custom Music DNA profiles
 - Integration with Spotify Web Playback SDK for in-app playing
 - Mood history tracking
 - Share playlists with friends
+- Import DNA profiles from external files
 
 Enjoy your personalized mood music experience!
